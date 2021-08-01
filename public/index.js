@@ -1,6 +1,6 @@
 socket.on('guardar-productos', () => {
 
-  const formProductos = document.querySelector('form')
+  const formProductos = document.querySelector('#form-productos')
   formProductos.addEventListener('submit', (e) => {
     e.preventDefault()
 
@@ -62,7 +62,7 @@ botonLogout.addEventListener('click', (e) => {
 let nombre = ''
 socket.on('nombre-usuario', data => {
 
-  console.log(data)
+  console.log('NOMBRE USUARIO: ' + data)
   function updateBienvenida(nombre) {
    
     let bienvenida = document.querySelector('#bienvenida')

@@ -49,11 +49,16 @@ const routerMensajes = express.Router();
 app.use('/api/productos', routerProductos);
 app.use('/api/mensajes', routerMensajes);
 
+
 // SESSION LOGIN 
-let nombreUsuario = '';
 
 app.get('/login', (req, res) => {
-    res.sendFile(__dirname + '/public/login.html')
+    if (!req.session.user) {
+        res.render('vista', { showLogin: true, showContent: false, showBienvenida: false });
+    } else {
+        res.render('vista', { showLogin: false, showContent: true, bienvenida: req.session.user, showBienvenida: true });
+    }
+
 })
 
 app.post('/login', (req, res) => {
@@ -63,30 +68,23 @@ app.post('/login', (req, res) => {
     }
     else {
         req.session.user = req.body.username
-        nombreUsuario = req.session.user
-        // io.sockets.emit("nombre-usuario", nombreUsuario);
-        // visibilidad = true
-        // io.sockets.emit('visibilidad-logout', visibilidad)        
-        res.redirect('/')
+        res.render('vista', { showLogin: false, showContent: true, bienvenida: req.session.user, showBienvenida: true  });
     }
 });
 
 // SESSION LOGOUT
 app.get('/logout', (req, res) => {
-    res.sendFile(__dirname + '/public/logout.html')
-})
-
-app.post('/logout', (req, res) => {
-    // nombreUsuario = ' '
-    // io.sockets.emit("nombre-usuario", nombreUsuario);
-    // visibilidad = false
-    // io.sockets.emit('visibilidad-logout', visibilidad)
     req.session.destroy(err => {
         if (!err) res.sendFile(__dirname + '/public/logout.html')
         else res.send(
             { status: 'Logout ERROR', body: err })
     })
 })
+
+// app.post('/logout', (req, res) => {
+
+
+// })
 
 const auth = (req, res, next) => {
     if (req.session && req.session.user == "admin" && req.session.admin) {
